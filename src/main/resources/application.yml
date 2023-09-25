@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: club-persist
+  rabbitmq:
+    host: ${RABBIT_HOST:localhost}
+    port: ${RABBIT_PORT:5672}
+    username: ${RABBIT_USERNAME:guest}
+    password: ${RABBIT_PASSWORD:guest}
+    listener:
+      simple:
+        concurrency: 2
+        default-requeue-rejected: false
+        prefetch: 1
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 1000
+          multiplier: 2
+          max-interval: 5000
+  datasource:
+    url: jdbc:sqlserver://${MSSQLDB_HOST:25.37.126.114}:${MSSQLDB_PORT:1433};databaseName=${MSSQLDB_DBNAME:TOTVS};trustServerCertificate=false;encrypt=false;
+    username: ${MSSQLDB_USERNAME:sa}
+    password: ${MSSQLDB_PASSWORD:000}
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  jpa:
+    open-in-view: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: beans,env
+  endpoint:
+    health:
+      show-details: always
+scheduler:
+  default-most-lock-time: PT30M
+  order-history:
+    cron-value: 0 0/1 * * * *
+    max-time-process: 240
+    least-lock-time: PT30S
+    most-lock-time: PT5M
